@@ -1,0 +1,13 @@
+[package]
+name = "syslog_server"
+version = "0.1.0"
+edition = "2024"
+
+[profile.release]
+opt-level = "z"     # Optimiert auf die kleinstmögliche Dateigröße
+lto = true          # Link Time Optimization (entfernt ungenutzten Code über Crates hinweg)
+codegen-units = 1   # Verhindert paralleles Kompilieren, ermöglicht aber bessere Optimierung
+panic = "abort"     # Entfernt den Code für Stack-Unwinding (spart viel Platz)
+strip = true
+
+[dependencies]
