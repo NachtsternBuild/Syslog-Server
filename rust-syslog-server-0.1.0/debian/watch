@@ -1,6 +1,0 @@
-Version: 5
-
-Source: https://qa.debian.org/cgi-bin/fakeupstream.cgi?upstream=crates.io/syslog-server
-Matching-Pattern:  .*/crates/syslog-server/@ANY_VERSION@/download
-Filenamemangle: s/.*\/(.*)\/download/syslog-server-$1\.tar\.gz/g
-Uversionmangle: s/(\d)[_\.\-\+]?((RC|rc|pre|dev|beta|alpha)\.?\d*)$/$1~$2/
