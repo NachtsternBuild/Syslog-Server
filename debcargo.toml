@@ -1,0 +1,22 @@
+# Kurze Zusammenfassung für das Debian-Paket
+summary = "Ein Tool, das hallo sagt"
+
+# Ausführliche Beschreibung (wird in 'apt show' angezeigt)
+description = """
+Dieses Paket bietet eine beispielhafte CLI-Anwendung, 
+die zeigt, wie man Rust-Crates sauber für Debian paketiert.
+Es nutzt Clap für das Argument-Parsing.
+"""
+
+# Falls du eine binäre Anwendung (Executable) paketierst:
+[bin]
+# Hiermit wird das Paket 'hello-debian' statt 'librust-hello-debian-dev' genannt
+name = "hello-debian"
+
+# Sektion für das Debian-Archiv (z.B. utils, rust, admin)
+section = "utils"
+
+# Hier kannst du Abhängigkeiten korrigieren, falls nötig
+[packages.lib]
+# Falls die Library-Version für andere Entwickler bereitstehen soll
+summary = "Rust-Library für hello-debian"
