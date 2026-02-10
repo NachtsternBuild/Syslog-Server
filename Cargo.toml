@@ -61,3 +61,13 @@ lto = true          # Link Time Optimization (removes unused code across crates)
 codegen-units = 1   # Prevents parallel compilation, but enables better optimization
 panic = "abort"     # Removes the code for stack unwinding (saves a lot of space)
 strip = true
+
+
+[package.metadata.deb]
+maintainer = "Elias Mörz <elias.moerz@mail.de>"
+copyright = "2026, Elias Mörz <elias.moerz@mail.de>"
+license-file = ["LICENSE", "0"] # Pfad zur Lizenz und Priorität
+depends = "$auto"
+section = "utils"
+priority = "optional"
+
