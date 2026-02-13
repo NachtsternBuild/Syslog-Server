@@ -45,7 +45,7 @@ fn ensure_root() {
 // TODO: write_file überall nutzen
 // TODO: cronjob anpassungen zeit
 fn main() {
-	//ensure_root(); // active at release
+	ensure_root(); // active at release
 	loop {
 		println!("\nWas soll gemacht werden?");
 		println!("-------------------------------------");
