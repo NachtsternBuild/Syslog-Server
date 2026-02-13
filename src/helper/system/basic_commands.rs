@@ -1,5 +1,6 @@
 use crate::helper::print_cmd::print_cmd;
 
+// show basic ubuntu commands
 pub fn basic_commands() {
 	println!("===================== SYSTEM INFO =====================\n");
 	print_cmd("hostnamectl", "Show system hostname and OS info", "hostnamectl");

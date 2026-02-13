@@ -12,7 +12,7 @@ use crate::{
 	},
 };
 	
-
+// a main config script
 pub fn config_server() {
 	desktop_install_menu();
 	add_log_tools();

@@ -15,7 +15,7 @@ pub fn get_rsyslog_config() {
 	}
 	
 	if fs::metadata(path).is_ok() {
-		if run_cmd("sudo", &["mv", path, "/etc/rsyslog.conf"]) {
+		if run_cmd("mv", &[path, "/etc/rsyslog.conf"]) {
 			println!("[OK] Konfiguration aktualisiert.");
 		}
 	}

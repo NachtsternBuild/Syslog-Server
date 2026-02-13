@@ -1,6 +1,7 @@
 use std::io::{self}; // Für Terminal IO
 use crate::helper::config::config_boot::config_boot;
 
+// functiopn that switch the boot mode by user choice
 pub fn change_boot_menu() {
 	println!("[?] Grafisch booten? (j/n): ");
 	let mut ans = String::new();

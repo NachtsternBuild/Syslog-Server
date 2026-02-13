@@ -1,12 +1,12 @@
 use std::process::{Command}; // externe programme starten
 
-// system befehle ausführen
-// I = Sammlung der Argumente 
-// S = die einzelnen Argumente
+// run system command
+// I = the list of arguments 
+// S = the argmeunts
 pub fn run_cmd<I, S>(cmd: &str, args: I) -> bool 
 where
-	I: IntoIterator<Item = S>, // akzeptieren jedes I (I besteht aus S)
-	S: AsRef<std::ffi::OsStr> // Alles nehmen was das OS nimmt
+	I: IntoIterator<Item = S>, // allow all I
+	S: AsRef<std::ffi::OsStr> // allow all from OS
 {
 	let status = Command::new(cmd)
 		.args(args)

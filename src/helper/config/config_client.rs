@@ -4,6 +4,7 @@ use crate::helper::system::server_ip::server_ip;
 use crate::helper::run_command::run_cmd;
 use std::path::PathBuf;
 
+// function that create the rsyslog.conf for the clients
 pub fn config_client() {
 	let mut content = r#"# /etc/rsyslog.conf configuration file for rsyslog
 #
@@ -79,14 +80,16 @@ user.*					-/var/log/user.log
 # Emergencies are sent to everybody logged in.
 #
 *.emerg					:omusrmsg:*"#.to_string();
-
+	
+	// get the server ip
 	match server_ip() {
 		Ok(ip) => {
-			content.push_str(&format!("\n*.* @@{}:514", ip));
+			content.push_str(&format!("\n*.* @@{}:514", ip)); // add the ip at the end
 			println!("[?] Soll die Rsyslog Client Konfiguration direkt angwendet werden? (j/n)");
 			let mut ans = String::new();
 			io::stdin().read_line(&mut ans).unwrap();
 			
+			// add the config to /etc
 			if ans.trim().to_lowercase() == "j" {
 				let create_file = write_file("rsyslog.conf", &content, Some(PathBuf::from("/")), &["etc"]);
 				match create_file {
@@ -96,6 +99,7 @@ user.*					-/var/log/user.log
 				println!("{}", content);
 				run_cmd("systemctl", &["restart", "rsyslog"]);
 			}
+			// add the conf ~/client-config
 			else {
 				let create_file = write_file("rsyslog.conf", &content, None, &["client-config"]);
 				match create_file {

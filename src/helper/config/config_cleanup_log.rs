@@ -3,6 +3,7 @@ use crate::helper::system::script_permission::script_permission;
 use crate::helper::system::move_file::move_file;
 use crate::helper::system::create_cronjob::create_cronjob;
 
+// function that create a script that cleanup old log files
 pub fn config_cleanup_log_files() {
 	let script_content = r#"!/bin/bash
 # Skript um alte Log Dateien zu löschen
@@ -27,21 +28,22 @@ while IFS= read -r element; do
 done < "$datei"
 echo \"[INFO] All log files in $datei that are older than 90 days habe been deleted!\""#;
 	let path = "/usr/local/bin/cleanup-log-files";
-	// Skript erstellen
+	// create script
 	script_permission(path, script_content);
 	
 	println!("\n\n[?] Pfad für neue directory.conf: ");
 	let mut path_dir = String::new();
 	io::stdin().read_line(&mut path_dir).unwrap();
 	let path_dir = path_dir.trim();
-	let target_path = "/usr/local/share/logging/directory.conf";
+	let target_path = "/usr/local/share/logging/directory.conf"; // FIXME
 	
-	// Datei an die Stelle verschieben
+	// move file
 	move_file(path_dir, target_path);
-	// einen Cronjob erstellen
-	create_cronjob(path);
+	// create cronjob
+	create_cronjob(path); // FIXME: Zeit mit übergeben 
 }
 
+// script that clean the logs
 pub fn config_cleanup_log() {
 	let script_content = r#"!/bin/bash
 # Skript um alte Log Einträge in den Log-Dateien zu löschen
@@ -85,17 +87,17 @@ while IFS= read -r element; do
 done < "$datei"
 echo "[INFO] All log files in $datei directory have been deleted!""#;
 	let path = "/usr/local/bin/cleanup-log";
-	// Skript erstellen
+	// create script
 	script_permission(path, script_content);
 	
 	println!("\n\n[?] Pfad für neue directory.conf: ");
 	let mut path_dir = String::new();
 	io::stdin().read_line(&mut path_dir).unwrap();
 	let path_dir = path_dir.trim();
-	let target_path = "/usr/local/share/logging/directory.conf";
+	let target_path = "/usr/local/share/logging/directory.conf"; // FIXME
 	
-	// Datei an die Stelle verschieben
+	// move file
 	move_file(path_dir, target_path);
-	// Erstelle einen Cronjob 
-	create_cronjob(path);
+	// create cronjob
+	create_cronjob(path); // FIXME
 }

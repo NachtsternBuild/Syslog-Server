@@ -1,7 +1,7 @@
 use std::thread; // threads (sleep)
-use std::time::Duration; // zeit für timer
+use std::time::Duration; // timer for the countdown
 
-// Countdown im Terminal
+// Countdown in the output
 pub fn timer(seconds: u32) {
 	for i in (1..=seconds).rev() {
 		println!("[INFO] {} Sekunden verbleibend...", i);

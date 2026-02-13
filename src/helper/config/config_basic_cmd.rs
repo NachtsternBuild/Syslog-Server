@@ -1,5 +1,6 @@
 use crate::helper::system::script_permission::script_permission;
 
+// add script, that show basic linux commands
 pub fn config_basic_cmd() {
 	let script_content = r#"!/bin/bash
 print_cmd() {
@@ -126,6 +127,6 @@ print_cmd "ncdu" "Disk usage analyzer" "ncdu /"
 print_cmd "lsof" "Open files" "lsof -i :22"
 print_cmd "strace" "Trace syscalls" "strace -p 1234""#;
 	let path = "/usr/local/bin/basic-cmd";
-	// Skript erstellen
+	// create script
 	script_permission(path, script_content);
 }

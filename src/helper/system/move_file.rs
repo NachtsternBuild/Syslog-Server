@@ -2,6 +2,7 @@ use std::fs;
 use crate::helper::run_command::run_cmd;
 use crate::helper::system::create_parent_dir::create_parent_dir;
 
+// function that move files
 pub fn move_file(path: &str, target_path: &str) {
 	if path.is_empty() {
 		println!("[INFO] Vorgang abgebrochen. Keine Änderung vorgenommen.");

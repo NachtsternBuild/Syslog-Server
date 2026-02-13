@@ -2,8 +2,9 @@ use directories::UserDirs;
 use std::fs;
 use std::path::PathBuf;
 
-// None = Home als Basis
-// Some = andere Basis
+// function that write a file 
+// None = Home as Base
+// Some = define a other base
 pub fn write_file(filename: &str, content: &str, base_path: Option<PathBuf>, path_list: &[&str]) -> std::io::Result<()> {
 	// create base path
 	let mut full_path = match base_path {

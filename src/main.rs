@@ -42,8 +42,10 @@ fn ensure_root() {
 // TODO: sudo weglassen → Programm muss mit root-rechten gestartet werden
 // TODO: Kommentare hinzufügen
 // TODO: systemd service einrichten bei login status rsyslogd auszuzeigen
+// TODO: write_file überall nutzen
+// TODO: cronjob anpassungen zeit
 fn main() {
-	//ensure_root();
+	//ensure_root(); // active at release
 	loop {
 		println!("\nWas soll gemacht werden?");
 		println!("-------------------------------------");

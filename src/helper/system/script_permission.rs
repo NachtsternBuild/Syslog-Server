@@ -1,7 +1,9 @@
-use std::fs; // Für Dateisystem-Operationen 
-use std::os::unix::fs::PermissionsExt; // Unix spezifisch (chmod)
+use std::fs; // filesystem
+use std::os::unix::fs::PermissionsExt; // unix perms (chmod like)
 use crate::helper::system::create_parent_dir::create_parent_dir;
 
+// function that set permission
+// TODO: perms (755 e.g.) from cli
 pub fn script_permission(path: &str, script_content: &str) {
 	// Elternpfad überprüfen
 	create_parent_dir(path);
