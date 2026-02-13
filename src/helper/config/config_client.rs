@@ -2,6 +2,7 @@ use std::io::{self}; // Für Terminal IO
 use crate::helper::write_file::write_file;
 use crate::helper::system::server_ip::server_ip;
 use crate::helper::run_command::run_cmd;
+use std::path::PathBuf;
 
 pub fn config_client() {
 	let mut content = r#"# /etc/rsyslog.conf configuration file for rsyslog
@@ -87,15 +88,20 @@ user.*					-/var/log/user.log
 			io::stdin().read_line(&mut ans).unwrap();
 			
 			if ans.trim().to_lowercase() == "j" {
-				let create_file = write_file("rsyslog.conf", &content, &["client-config"]); // FIXME: erstellen in /etc nicht ~/client-config
+				let create_file = write_file("rsyslog.conf", &content, Some(PathBuf::from("/")), &["etc"]);
 				match create_file {
 					Ok(p) => println!("[OK] Datei erstellt unter: {:?}", p),
 					Err(e) => eprintln!("[ERROR] Fehler: {}", e),
 				}		
 				println!("{}", content);
-				run_cmd("sudo", &["systemctl", "restart", "rsyslog"]);
+				run_cmd("systemctl", &["restart", "rsyslog"]);
 			}
 			else {
+				let create_file = write_file("rsyslog.conf", &content, None, &["client-config"]);
+				match create_file {
+					Ok(p) => println!("[OK] Datei erstellt unter: {:?}", p),
+					Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+				}
 				println!("{}", content);
 			}			
 		}

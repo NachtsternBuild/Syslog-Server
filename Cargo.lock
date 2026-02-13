@@ -620,6 +620,7 @@ dependencies = [
  "clap",
  "directories",
  "env_logger",
+ "libc",
  "local-ip-address",
  "log",
  "serde",

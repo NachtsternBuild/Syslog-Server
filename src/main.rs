@@ -29,10 +29,21 @@ use crate::{
 	},
 };
 
+// function to check if programm run as root
+fn ensure_root() {
+	if unsafe { libc::geteuid() } != 0 {
+		eprintln!("[ERROR] Dieses Programm benötigt Root-Rechte.");
+        eprintln!("[INFO] Starte es mit sudo oder verwende den Client.");
+        std::process::exit(1);
+    }
+}
 
+// main
 // TODO: sudo weglassen → Programm muss mit root-rechten gestartet werden
-// TODO: Kommentare hinzufügen	
+// TODO: Kommentare hinzufügen
+// TODO: systemd service einrichten bei login status rsyslogd auszuzeigen
 fn main() {
+	//ensure_root();
 	loop {
 		println!("\nWas soll gemacht werden?");
 		println!("-------------------------------------");
@@ -42,7 +53,6 @@ fn main() {
 		println!("(u) Updates und Upgrades");
         println!("(c) Nach Updates Aufräumen");
         println!("(n) Neustarten");
-        println!("(a) Abmelden");
         println!("(i) Kommandoübersicht"); 
         println!("-------------------------------------");
         println!("(d) Desktop hinzu installieren");
@@ -53,13 +63,14 @@ fn main() {
         println!("(b) Boot-Modus ändern");
         println!("-------------------------------------");
         println!("(v) Verlassen/Beenden");
-
+		
+		// Show "Eingabe" now
         print!("\nEingabe: ");
-        io::stdout().flush().unwrap(); // "Eingabe:" sofort anzeigen
+        io::stdout().flush().unwrap(); 
         
-        let mut input = String::new(); // String für input
-        io::stdin().read_line(&mut input).unwrap(); // liest Zeile von stdin
-        let choice = input.trim().to_lowercase(); // entfernt Leerzeoichen/Zeilenumbrüche
+        let mut input = String::new(); 
+        io::stdin().read_line(&mut input).unwrap();
+        let choice = input.trim().to_lowercase(); // remove linebreak
         
         // switch/case 
         match choice.as_str() {
@@ -69,12 +80,8 @@ fn main() {
         	"c" => cleanup(),
         	"n" => {
         		timer(15);
-        		run_cmd("sudo", &["reboot"]);
-        	}
-        	"a" => {
-        		timer(15);
-        		let args: &[&str] = &[]; // Expliziter Typ hilft dem Compiler
-        		run_cmd("logout", args);
+        		let args: &[&str] = &[];
+        		run_cmd("reboot", args);
         	}
         	"i" => basic_commands(), 
         	"d" => desktop_install_menu(),
@@ -83,7 +90,7 @@ fn main() {
         	"f" => firewall_menu(),
         	"s" => status_syslog_tools(),
         	"b" => change_boot_menu(),
-        	"v" => break, // schleife beenden
+        	"v" => break, // close loop
         	_ => {
         		println!("[ERROR] Unbekannte Eingabe!");
         	}     

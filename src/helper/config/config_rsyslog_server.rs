@@ -1,5 +1,6 @@
 use crate::helper::write_file::write_file;
 use crate::helper::run_command::run_cmd;
+use std::path::PathBuf;
 
 pub fn config_rsyslog_server() {
 	let content = r#"# /etc/rsyslog.conf configuration file for rsyslog
@@ -77,11 +78,11 @@ $IncludeConfig /etc/rsyslog.d/*.conf
 *.* ?RemoteLogs
 & stop"#.to_string();
 
-	let create_file = write_file("rsyslog.conf", &content, &["etc"]); // FIXME: to /etc not to ~/etc
+	let create_file = write_file("rsyslog.conf", &content, Some(PathBuf::from("/")), &["etc"]);
 	match create_file {
 		Ok(p) => println!("[OK] Datei erstellt unter: {:?}", p),
 		Err(e) => eprintln!("[ERROR] Fehler: {}", e),	
 	}
-	run_cmd("sudo", &["systemctl", "restart", "rsyslog"]);
+	run_cmd("systemctl", &["restart", "rsyslog"]);
 }
 	
