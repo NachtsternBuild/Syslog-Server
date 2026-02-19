@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use crate::helper::system::script_permission::script_permission;
 
 // function that create a easy way enter the desktop
@@ -9,8 +10,10 @@ if [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; then
 fi
 echo "[INFO] Launching GNOME Wayland session..."
 XDG_SESSION_TYPE=wayland dbus-run-session gnome-session"#;
-	
-	let path = "/usr/local/bin/start-gnome"; // FIXME
 	// create script
-	script_permission(path, script_content);
+	let create_file = script_permission("start-gnome", &script_content, Some(PathBuf::from("/")), &["usr", "local", "bin"]);
+	match create_file {
+		Ok(p) => println!("[OK] Datei erstellt unter: {:?}", p),
+		Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+	}	
 }

@@ -1,4 +1,5 @@
 use std::io::{self}; // Für Terminal IO
+use std::path::PathBuf;
 use crate::helper::system::script_permission::script_permission;
 use crate::helper::system::move_file::move_file;
 use crate::helper::system::create_cronjob::create_cronjob;
@@ -27,22 +28,55 @@ while IFS= read -r element; do
 	find_old_log $element
 done < "$datei"
 echo \"[INFO] All log files in $datei that are older than 90 days habe been deleted!\""#;
-	let path = "/usr/local/bin/cleanup-log-files";
-	// create script
-	script_permission(path, script_content);
+	let create_file = script_permission("cleanup-log-files", &script_content, Some(PathBuf::from("/")), &["usr", "local", "bin"]);
+	let cron = "0 1 * *"; // the cronjob command
+	match create_file {
+		Ok(p) => println!("[OK] Datei erstellt unter: {:?}", p),
+		Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+	}	
 	
+	// new directoy.conf?
 	println!("\n\n[?] Pfad für neue directory.conf: ");
 	let mut path_dir = String::new();
 	io::stdin().read_line(&mut path_dir).unwrap();
 	let path_dir = path_dir.trim();
-	let target_path = "/usr/local/share/logging/directory.conf";
+	if path_dir.is_empty() {
+		println!("[INFO] Vorgang abgebrochen. Keine Änderung vorgenommen.");
+		// create the cronjob
+		let log_cronjob = create_cronjob(cron, "cleanup-log-files", Some(PathBuf::from("/")), &["usr", "local", "bin"]);
+		match log_cronjob {
+			Ok(p) => println!("[OK] Cronjob erstellt: {:?}", p),
+			Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+		}
+		return; 
+	}
 	
-	// move file
-	move_file(path_dir, target_path);
-	
+    // split the full path
+    let all_elements: Vec<&str> = path_dir
+        .split('/')
+        .filter(|s| !s.is_empty())
+        .collect();
+
+    // split the last element 
+    // split last return tupel
+    if let Some((filename, path_list)) = all_elements.split_last() {      
+        let input_filename: &str = filename;
+        let input_path_list: &[&str] = path_list;
+        
+        // move file
+		let directory_file = move_file(input_filename, Some(PathBuf::from("/")), &input_path_list, "directory.conf", Some(PathBuf::from("/")), &["usr", "local", "share", "logging"]);
+		match directory_file {
+			Ok(p) => println!("[OK] Datei verschoben: {:?}", p),
+			Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+		}
+    }
+		
 	// create cronjob
-	let cron = "0 2 * *";
-	create_cronjob(cron, path); 
+	let log_cronjob = create_cronjob(cron, "cleanup-log-files", Some(PathBuf::from("/")), &["usr", "local", "bin"]);
+	match log_cronjob {
+		Ok(p) => println!("[OK] Cronjob erstellt: {:?}", p),
+		Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+	}
 }
 
 // script that clean the logs
@@ -88,20 +122,52 @@ while IFS= read -r element; do
 	fin_old_log $element
 done < "$datei"
 echo "[INFO] All log files in $datei directory have been deleted!""#;
-	let path = "/usr/local/bin/cleanup-log";
-	// create script
-	script_permission(path, script_content);
+	let create_file = script_permission("cleanup-log", &script_content, Some(PathBuf::from("/")), &["usr", "local", "bin"]);
+	let cron = "0 2 * *"; // the cronjob command
+	match create_file {
+		Ok(p) => println!("[OK] Datei erstellt unter: {:?}", p),
+		Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+	}	
 	
+	// new directoy.conf?
 	println!("\n\n[?] Pfad für neue directory.conf: ");
 	let mut path_dir = String::new();
 	io::stdin().read_line(&mut path_dir).unwrap();
 	let path_dir = path_dir.trim();
-	let target_path = "/usr/local/share/logging/directory.conf";
+	if path_dir.is_empty() {
+		println!("[INFO] Vorgang abgebrochen. Keine Änderung vorgenommen.");
+		// create the cronjob
+		let log_cronjob = create_cronjob(cron, "cleanup-log", Some(PathBuf::from("/")), &["usr", "local", "bin"]);
+		match log_cronjob {
+			Ok(p) => println!("[OK] Cronjob erstellt: {:?}", p),
+			Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+		}
+		return; 
+	}
 	
-	// move file
-	move_file(path_dir, target_path);
+    // split the full path
+    let all_elements: Vec<&str> = path_dir
+        .split('/')
+        .filter(|s| !s.is_empty())
+        .collect();
+
+    // split the last element 
+    // split last return tupel
+    if let Some((filename, path_list)) = all_elements.split_last() {      
+        let input_filename: &str = filename;
+        let input_path_list: &[&str] = path_list;
+        // move file
+		let directory_file = move_file(input_filename, Some(PathBuf::from("/")), &input_path_list, "directory.conf", Some(PathBuf::from("/")), &["usr", "local", "share", "logging"]);
+		match directory_file {
+			Ok(p) => println!("[OK] Datei verschoben: {:?}", p),
+			Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+		}
+    }
 	
 	// create cronjob
-	let cron = "0 1 * *";
-	create_cronjob(cron, path);
+	let log_cronjob = create_cronjob(cron, "cleanup-log", Some(PathBuf::from("/")), &["usr", "local", "bin"]);
+	match log_cronjob {
+		Ok(p) => println!("[OK] Cronjob erstellt: {:?}", p),
+		Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+	}
 }

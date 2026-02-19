@@ -11,7 +11,7 @@ pub fn write_file(filename: &str, content: &str, base_path: Option<PathBuf>, pat
 		Some(path) => path,
 		None => {
 			let user_dirs = UserDirs::new()
-				.ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "Home Verzeichnis nicht gefunden"))?;
+				.ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "[ERROR] Home Verzeichnis nicht gefunden"))?;
 			PathBuf::from(user_dirs.home_dir())
 		}
 	};

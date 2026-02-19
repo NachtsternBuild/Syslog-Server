@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use crate::helper::system::script_permission::script_permission;
 
 // add script, that show basic linux commands
@@ -126,7 +127,10 @@ print_cmd "sar" "Historical metrics" "sar -u 1 3"
 print_cmd "ncdu" "Disk usage analyzer" "ncdu /"
 print_cmd "lsof" "Open files" "lsof -i :22"
 print_cmd "strace" "Trace syscalls" "strace -p 1234""#;
-	let path = "/usr/local/bin/basic-cmd";
 	// create script
-	script_permission(path, script_content);
+	let create_file = script_permission("basic-cmd", &script_content, Some(PathBuf::from("/")), &["usr", "local", "bin"]);
+	match create_file {
+		Ok(p) => println!("[OK] Datei erstellt unter: {:?}", p),
+		Err(e) => eprintln!("[ERROR] Fehler: {}", e),
+	}
 }

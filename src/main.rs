@@ -7,7 +7,10 @@ use crate::{
 	helper::{
 		run_command::run_cmd,
 		timer::timer,
-		config::config_client::config_client,
+		config::{
+			config_client::config_client,
+			config_pam_rsyslog::config_pam_rsyslog,
+		},
 		system::{
 			basic_commands::basic_commands,
 			system_helper::{
@@ -31,7 +34,6 @@ use crate::{
 };
 
 // main
-// TODO: systemd service einrichten bei login status rsyslogd auszuzeigen
 // TODO: Windows Client konfiguration
 // TODO: Docs
 
@@ -52,7 +54,7 @@ fn main() {
         println!("(i) Kommandoübersicht"); 
         println!("-------------------------------------");
         println!("(d) Desktop hinzu installieren");
-        println!("(p) Rsyslog Übersicht beim Login"); // TODO
+        println!("(p) Rsyslog Übersicht beim Login");
         println!("(t) Zusätzliche Log Tools"); 
         println!("(r) Neue Rsyslog Config nutzen");
         println!("(f) Firewall-Modus ändern");
@@ -84,7 +86,7 @@ fn main() {
         	}
         	"i" => basic_commands(), 
         	"d" => desktop_install_menu(),
-        	"p" => cleanup(), // TODO
+        	"p" => config_pam_rsyslog(),
         	"t" => add_log_tools(), 
         	"r" => get_rsyslog_config(),
         	"f" => firewall_menu(),
