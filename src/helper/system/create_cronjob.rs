@@ -4,7 +4,7 @@ use std::io::Write;
 use std::path::PathBuf;
 use directories::UserDirs;
 
-// function that create a cronjob
+// function that create a cronjob with a file as target
 pub fn create_cronjob(cron: &str, filename: &str, base_path: Option<PathBuf>, path_list: &[&str]) -> std::io::Result<()> {
 	// create base path
 	let mut full_path = match base_path {
@@ -66,5 +66,58 @@ pub fn create_cronjob(cron: &str, filename: &str, base_path: Option<PathBuf>, pa
 	std::fs::remove_file("/tmp/crontab_temp").expect("[ERROR] Fehler beim Löschen der tmp Datei");
 	
 	Ok(())
+}
+
+// create cronjob without a file
+pub fn create_cronjob_shell(cron_schedule: &str, command: &str) -> std::io::Result<()> {
+    // get active cronjobs
+    let output = Command::new("crontab")
+        .arg("-l")
+        .output()?;
+
+    let mut cron_jobs = if output.status.success() {
+        String::from_utf8_lossy(&output.stdout).to_string()
+    } else {
+        String::new()
+    };
+
+    // format the cronjob
+    let new_job = format!("{} {}", cron_schedule, command);
+
+    // check if cronjob exists
+    if cron_jobs.lines().any(|line| line == new_job) {
+        println!("[WARN] Dieser Cronjob existiert bereits.");
+        return Ok(());
+    }
+
+    // add new cron
+    cron_jobs.push_str(&format!("{}\n", new_job));
+
+    // write a tmp file
+    let temp_path = "/tmp/crontab_temp";
+    {
+        let mut file = OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true)
+            .open(temp_path)?;
+        file.write_all(cron_jobs.as_bytes())?;
+    }
+
+    // update cronjobs
+    let status = Command::new("crontab")
+        .arg(temp_path)
+        .status()?;
+
+    if status.success() {
+        println!("[OK] Cronjob erfolgreich hinzugefügt: {}", new_job);
+    } else {
+        return Err(std::io::Error::new(std::io::ErrorKind::Other, "[ERROR] Crontab konnte nicht aktualisiert werden"));
+    }
+
+    // cleanup
+    std::fs::remove_file("/tmp/crontab_temp").expect("[ERROR] Fehler beim Löschen der tmp Datei");
+
+    Ok(())
 }
 

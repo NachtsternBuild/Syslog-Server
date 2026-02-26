@@ -13,6 +13,7 @@ use crate::{
 		},
 		system::{
 			basic_commands::basic_commands,
+			free_cache_ram::free_cache_ram,
 			system_helper::{
 				refresh_system,
 				cleanup,
@@ -30,22 +31,28 @@ use crate::{
 			change_boot_menu::change_boot_menu,
 			add_log_tools::add_log_tools,
 		},
+		client::{
+			linux_cli::linux_cli,
+			free_cache_ram_cronjob::free_cache_ram_cronjob,
+		},
 	},
 };
 
 // main
-// TODO: Windows Client konfiguration
 // TODO: Docs
+// TODO: Konfiguration für Client/Server aus Config datei auslesen 
+// TODO: RAM/Swap/Cache freigeben → Funktion + Cronjob
+// FIXME: Konfiguration Server/Client was passieren soll bei keinem Server
+// FIXME: Virenschutz?
 
 fn main() {
-	ensure_root(); // active at release
+	//ensure_root(); // active at release
 	loop {
 		println!("\nWas soll gemacht werden?");
 		println!("-------------------------------------");
         println!("(k) Server konfigurieren"); // TODO
         println!("(o) Client Konfiguration ausgeben"); 
         println!("-------------------------------------");
-		println!("(w) Windows Client konfigurieren"); // TODO
 		println!("(l) Linux Client konfigurieren"); // TODO
         println!("-------------------------------------");
 		println!("(u) Updates und Upgrades");
@@ -60,6 +67,8 @@ fn main() {
         println!("(f) Firewall-Modus ändern");
         println!("(s) Status von System Tools ausgeben");
         println!("(b) Boot-Modus ändern");
+        println!("(h) Cache/RAM Freigabe");
+        println!("(a) Cache/RAM Freigabe als Cronjob");
         println!("-------------------------------------");
         println!("(v) Verlassen/Beenden");
 		
@@ -75,8 +84,7 @@ fn main() {
         match choice.as_str() {
         	"k" => config_server(),
         	"o" => config_client(), 
-        	"w" => cleanup(), // TODO
-        	"l" => cleanup(), // TODO
+        	"l" => linux_cli(),
         	"u" => refresh_system(),
         	"c" => cleanup(),
         	"n" => {
@@ -92,6 +100,13 @@ fn main() {
         	"f" => firewall_menu(),
         	"s" => status_syslog_tools(),
         	"b" => change_boot_menu(),
+        	"h" => {
+        		match free_cache_ram() {
+        			Ok(_) => println!("[OK] Speicher wurde freigegeben."),
+        			Err(e) => eprintln!("[ERROR] Fehler bei Freigeben des Caches/RAMs: {}", e),
+        		}
+        	}
+        	"a" => free_cache_ram_cronjob(),
         	"v" => break, // close loop
         	_ => {
         		println!("[ERROR] Unbekannte Eingabe!");
