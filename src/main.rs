@@ -43,9 +43,8 @@ use crate::{
 // main
 // TODO: Docs
 // FIXME: Server konfiguration schreiben ?
-
 fn main() {
-	//ensure_root(); // active at release
+	ensure_root(); // active at release
 	loop {
 		println!("\nWas soll gemacht werden?");
 		println!("-------------------------------------");

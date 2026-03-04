@@ -3,9 +3,9 @@ use std::path::Path;
 use toml::Value;
 
 // default path to the settings.toml
-const CONFIG_PATH: &str = "settings.toml";
+//const CONFIG_PATH: &str = "settings.toml";
 // for deb release
-//const CONFIG_PATH: &str = "/etc/syslog-server/settings.toml";
+const CONFIG_PATH: &str = "/etc/syslog-server/settings.toml";
 
 // function to read the config files 
 pub fn read_config(key: &str) -> Option<Value> {
