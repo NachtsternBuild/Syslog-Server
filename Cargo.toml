@@ -1,6 +1,6 @@
 [package]
 name = "syslog-server"
-version = "0.2.2"
+version = "0.3.0"
 authors = ["Elias Mörz <elias.moerz@mail.de>"]
 edition = "2024"
 
