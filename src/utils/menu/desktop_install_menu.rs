@@ -1,10 +1,12 @@
-use std::io::{self}; // Für Terminal IO
 use crate::utils::install::install_depends::install_depends;
+use crate::helper::handle_user_interaction::handle_user_interaction;
 
 // function that install desktop by user choice
 pub fn desktop_install_menu() {
-	println!("[?] Desktop installieren? (j/n): ");
-	let mut ans = String::new();
-	io::stdin().read_line(&mut ans).unwrap();
+	let ans = handle_user_interaction(
+		"desktop_install_menu",
+		"[?] Desktop installieren? (j/n): "
+	);
+	
 	install_depends(ans.trim().to_lowercase() == "j"); // install depends
 }

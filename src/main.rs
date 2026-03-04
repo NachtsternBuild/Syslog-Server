@@ -7,6 +7,7 @@ use crate::{
 	helper::{
 		run_command::run_cmd,
 		timer::timer,
+		add_config_user::add_config_user,
 		config::{
 			config_client::config_client,
 			config_pam_rsyslog::config_pam_rsyslog,
@@ -30,6 +31,7 @@ use crate::{
 			firewall_menu::firewall_menu,
 			change_boot_menu::change_boot_menu,
 			add_log_tools::add_log_tools,
+			logrotate::logrotate,
 		},
 		client::{
 			linux_cli::linux_cli,
@@ -40,35 +42,34 @@ use crate::{
 
 // main
 // TODO: Docs
-// TODO: Konfiguration für Client/Server aus Config datei auslesen 
-// TODO: RAM/Swap/Cache freigeben → Funktion + Cronjob
-// FIXME: Konfiguration Server/Client was passieren soll bei keinem Server
-// FIXME: Virenschutz?
+// FIXME: Server konfiguration schreiben ?
 
 fn main() {
 	//ensure_root(); // active at release
 	loop {
 		println!("\nWas soll gemacht werden?");
 		println!("-------------------------------------");
-        println!("(k) Server konfigurieren"); // TODO
-        println!("(o) Client Konfiguration ausgeben"); 
+        println!("(a) Server konfigurieren"); // TODO
+        println!("(b) Client Konfiguration ausgeben"); 
         println!("-------------------------------------");
-		println!("(l) Linux Client konfigurieren"); // TODO
+		println!("(c) Linux Client konfigurieren"); 
         println!("-------------------------------------");
-		println!("(u) Updates und Upgrades");
-        println!("(c) Nach Updates Aufräumen");
-        println!("(n) Neustarten");
-        println!("(i) Kommandoübersicht"); 
+		println!("(d) Updates und Upgrades");
+        println!("(e) Nach Updates Aufräumen");
+        println!("(f) Neustarten");
+        println!("(g) Kommandoübersicht"); 
         println!("-------------------------------------");
-        println!("(d) Desktop hinzu installieren");
-        println!("(p) Rsyslog Übersicht beim Login");
-        println!("(t) Zusätzliche Log Tools"); 
-        println!("(r) Neue Rsyslog Config nutzen");
-        println!("(f) Firewall-Modus ändern");
-        println!("(s) Status von System Tools ausgeben");
-        println!("(b) Boot-Modus ändern");
-        println!("(h) Cache/RAM Freigabe");
-        println!("(a) Cache/RAM Freigabe als Cronjob");
+        println!("(h) Desktop hinzu installieren");
+        println!("(i) Rsyslog Übersicht beim Login");
+        println!("(j) Zusätzliche Log Tools"); 
+        println!("(k) Neue Rsyslog Config nutzen");
+        println!("(l) Firewall-Modus ändern");
+        println!("(m) Status von System Tools ausgeben");
+        println!("(n) Boot-Modus ändern");
+        println!("(o) Cache/RAM Freigabe");
+        println!("(p) Cache/RAM Freigabe als Cronjob");
+        println!("(q) Tool Konfiguration ändern");
+        println!("(r) Logrotation einrichten/testen"); 
         println!("-------------------------------------");
         println!("(v) Verlassen/Beenden");
 		
@@ -82,31 +83,33 @@ fn main() {
         
         // switch/case 
         match choice.as_str() {
-        	"k" => config_server(),
-        	"o" => config_client(), 
-        	"l" => linux_cli(),
-        	"u" => refresh_system(),
-        	"c" => cleanup(),
-        	"n" => {
+        	"a" => config_server(),
+        	"b" => config_client(), 
+        	"c" => linux_cli(),
+        	"d" => refresh_system(),
+        	"e" => cleanup(),
+        	"f" => {
         		timer(15);
         		let args: &[&str] = &[];
         		run_cmd("reboot", args);
         	}
-        	"i" => basic_commands(), 
-        	"d" => desktop_install_menu(),
-        	"p" => config_pam_rsyslog(),
-        	"t" => add_log_tools(), 
-        	"r" => get_rsyslog_config(),
-        	"f" => firewall_menu(),
-        	"s" => status_syslog_tools(),
-        	"b" => change_boot_menu(),
-        	"h" => {
+        	"g" => basic_commands(), 
+        	"h" => desktop_install_menu(),
+        	"i" => config_pam_rsyslog(),
+        	"j" => add_log_tools(), 
+        	"k" => get_rsyslog_config(),
+        	"l" => firewall_menu(),
+        	"m" => status_syslog_tools(),
+        	"n" => change_boot_menu(),
+        	"o" => {
         		match free_cache_ram() {
         			Ok(_) => println!("[OK] Speicher wurde freigegeben."),
         			Err(e) => eprintln!("[ERROR] Fehler bei Freigeben des Caches/RAMs: {}", e),
         		}
         	}
-        	"a" => free_cache_ram_cronjob(),
+        	"p" => free_cache_ram_cronjob(),
+        	"q" => add_config_user(),
+        	"r" => logrotate(),
         	"v" => break, // close loop
         	_ => {
         		println!("[ERROR] Unbekannte Eingabe!");

@@ -1,8 +1,8 @@
-use std::io::{self}; // Für Terminal IO
 use crate::helper::write_file::write_file;
 use crate::helper::system::server_ip::server_ip;
 use crate::helper::run_command::run_cmd;
 use std::path::PathBuf;
+use crate::helper::handle_user_interaction::handle_user_interaction;
 
 // function that create the rsyslog.conf for the clients
 pub fn config_client() {
@@ -85,9 +85,11 @@ user.*					-/var/log/user.log
 	match server_ip() {
 		Ok(ip) => {
 			content.push_str(&format!("\n*.* @@{}:514", ip)); // add the ip at the end
-			println!("[?] Soll die Rsyslog Client Konfiguration direkt angwendet werden? (j/n)");
-			let mut ans = String::new();
-			io::stdin().read_line(&mut ans).unwrap();
+			
+			let ans = handle_user_interaction(
+				"client_config",
+				"[?] Soll die Rsyslog Client Konfiguration direkt angwendet werden? (j/n)"
+			);	
 			
 			// add the config to /etc
 			if ans.trim().to_lowercase() == "j" {

@@ -1,8 +1,8 @@
-use std::io;
 use std::net::IpAddr;
 use std::path::PathBuf;
 use crate::helper::write_file::write_file;
 use crate::helper::add_line_file::add_line_file;
+use crate::helper::handle_user_interaction::handle_user_interaction;
 
 pub fn linux_cli() {
 	let content = r#"# /etc/rsyslog.conf configuration file for rsyslog
@@ -79,16 +79,18 @@ user.*					-/var/log/user.log
 # Emergencies are sent to everybody logged in.
 #
 *.emerg					:omusrmsg:*"#.to_string();
-	println!("[?] Geben Sie die Server IP ein: ");
+	
 	let create_file = write_file("rsyslog.conf", &content, Some(PathBuf::from("/")), &["etc"]);
 	match create_file {
 		Ok(p) => println!("[OK] Datei geschrieben: {:?}", p),
 		Err(e) => eprintln!("[ERROR] Fehler: {}", e),
 	}
-
-	let mut ans = String::new();
-	io::stdin().read_line(&mut ans).unwrap();
-	let address = ans.trim();
+	
+	let address = handle_user_interaction(
+		"linux_cli_server_ip",
+		"[?] Geben Sie die Server IP ein: "
+	);
+	
 	let path;
 	match address.parse::<IpAddr>() {
 		Ok(_) => {

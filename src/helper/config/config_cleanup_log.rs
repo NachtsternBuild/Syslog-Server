@@ -1,8 +1,8 @@
-use std::io::{self}; // Für Terminal IO
 use std::path::PathBuf;
 use crate::helper::system::script_permission::script_permission;
 use crate::helper::system::move_file::move_file;
 use crate::helper::system::create_cronjob::create_cronjob;
+use crate::helper::handle_user_interaction::handle_user_interaction;
 
 // function that create a script that cleanup old log files
 pub fn config_cleanup_log_files() {
@@ -35,11 +35,11 @@ echo \"[INFO] All log files in $datei that are older than 90 days habe been dele
 		Err(e) => eprintln!("[ERROR] Fehler: {}", e),
 	}	
 	
-	// new directoy.conf?
-	println!("\n\n[?] Pfad für neue directory.conf: ");
-	let mut path_dir = String::new();
-	io::stdin().read_line(&mut path_dir).unwrap();
-	let path_dir = path_dir.trim();
+	let path_dir = handle_user_interaction(
+		"directory_clean_log_file",
+		"[?] Pfad für neue directory.conf: "
+	);
+	
 	if path_dir.is_empty() {
 		println!("[INFO] Vorgang abgebrochen. Keine Änderung vorgenommen.");
 		// create the cronjob
@@ -130,10 +130,11 @@ echo "[INFO] All log files in $datei directory have been deleted!""#;
 	}	
 	
 	// new directoy.conf?
-	println!("\n\n[?] Pfad für neue directory.conf: ");
-	let mut path_dir = String::new();
-	io::stdin().read_line(&mut path_dir).unwrap();
-	let path_dir = path_dir.trim();
+	let path_dir = handle_user_interaction(
+		"directory_clean_log",
+		"[?] Pfad für neue directory.conf: "
+	);
+	
 	if path_dir.is_empty() {
 		println!("[INFO] Vorgang abgebrochen. Keine Änderung vorgenommen.");
 		// create the cronjob

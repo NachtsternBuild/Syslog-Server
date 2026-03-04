@@ -4,3 +4,4 @@ pub mod desktop_install_menu;
 pub mod firewall_menu;
 pub mod get_rsyslog_config;
 pub mod add_log_tools;
+pub mod logrotate;
